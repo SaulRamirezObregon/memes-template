@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet">
+</head>
+<body>
+    <style>
+    body{
+        background-color: #324D5C;
+    }
+
+    .imgMeme{
+     width: 60%;
+     height: 60%;
+     border-radius: 10px;
+     border: 10px solid #14B278;
+     align-self: center;
+    }
+
+    .imgMeme:hover{
+     -webkit-box-shadow: 0px 7px 19px -1px rgba(0,0,0,0.75);
+     -moz-box-shadow: 0px 7px 19px -1px rgba(0,0,0,0.75);
+     box-shadow: 0px 7px 19px -1px rgba(0,0,0,0.75);
+    }
+
+    .main{
+     width: 100%;
+     display: flex;
+     flex-flow: column wrap;
+    }
+
+    .meme{
+     align-self: center;
+     width: 50%;
+     height: 400px;
+     background-color: #ED3752;
+     border: 20px solid #E37B40;
+     border-radius: 10px;
+     display: flex;
+     flex-flow: column wrap;
+     justify-content: space-around;
+     margin-top: 20px;
+    }
+
+    .meme:hover{
+     -webkit-box-shadow: 0px 7px 19px -1px rgba(0,0,0,0.75);
+     -moz-box-shadow: 0px 7px 19px -1px rgba(0,0,0,0.75);
+     box-shadow: 0px 7px 19px -1px rgba(0,0,0,0.75);
+    }
+
+    .nameMeme{
+     text-align: center;
+     font-family: 'Permanent Marker', cursive;
+     font-size: 45px;
+     font-weight: bold;
+     color:#F0CA4D;
+     align-self: center;
+    }
+    .filter{
+     width: 100%;
+     display: flex;
+     justify-content:center;
+    }
+
+    #filter{
+     border: 20px solid #E37B40;
+     border-radius: 10px;
+     width:50%;
+     height: 40px;
+     font-size: 30px;
+     font-weight: bold;
+     background-color: #324D5C;
+     color:gray;
+    }
+    </style>
+    <div class="filter">
+        <input type="text" name="" id="filter" placeholder="Find by name...">
+    </div>
+    <main class="main">
+     
+    </main>
+
+
+    <!-- Links JS files here! -->
+    <script>
+
+    function readJSONFrom(url) {
+        return fetch(url)
+            .then(response => response.json())
+            .then(get);
+     }
+
+    function get(data) {
+     const main = document.querySelector('.main')
+     data.data.memes.forEach(meme =>{ 
+      main.innerHTML+= divMeme(meme.url,meme.name)  
+     })
+         
+     const inputFilter = document.querySelector('#filter');
+     inputFilter.addEventListener('keyup',e =>{
+      filterBy(inputFilter.value,data,main)
+     })
+    }
+
+    function filterBy(nameMeme,data,main){
+     const filter = data.data.memes.filter(meme => meme.name.indexOf(nameMeme.trim())>-1)
+     console.log(`longitud:${filter.length} resultado: `,filter);
+     main.innerHTML=''
+     filter.forEach(meme =>{
+      main.innerHTML+= divMeme(meme.url,meme.name)
+     })
+
+    if(filter.length <=0){
+     main.innerHTML = divMeme('./assets/img/confused.jpg',`${filter.length} resultados para "${nameMeme}"`)     
+    }
+     
+    }
+
+    function divMeme(url,name)
+    {
+     const div = 
+     `
+      <div class="meme">
+       <img src='${url}' class="imgMeme"></img>
+       <span class="nameMeme">${name}</span>
+      </div>
+        `
+        return div
+    }
+
+        readJSONFrom('https://api.imgflip.com/get_memes')
+    </script>
+</body>
+</html>
